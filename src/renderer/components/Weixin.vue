@@ -369,7 +369,7 @@ export default {
         },
         logout () {
             this.$store.dispatch('signOut').then(res => {
-                if (res.success) {
+                if (res.message === 'Success') {
                     this.$router.push({
                         path: '/'
                     })

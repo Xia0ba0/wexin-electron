@@ -26,8 +26,8 @@ const mutations = {
     setUserImage (state, url) {
         state.user.image = url
     },
-    setCK (state, data) {
-        localStorage.setItem('ck', data)
+    setCookie (data) {
+        localStorage.setItem('Cookie', data)
     }
 }
 
@@ -51,12 +51,12 @@ const actions = {
     },
     signIn ({commit}, data) {
         return ajax.post('/user/login', data).then((res) => {
-            console.log(res.data.message)
+            console.log(res)
             commit('setUser', {
                 ...res.data.userInfo
             })
             commit('setIsLogged', true)
-            commit('setCK', res.data.ck)
+            commit('setCookie', res.data.Cookie)
             return res
         })
     },
@@ -64,11 +64,11 @@ const actions = {
         return ajax.post('/chat/user/sign_up', data)
     },
     signOut ({commit}) {
-        return ajax.post('/chat/user/sign_out')
+        return ajax.get('user/logout')
             .then((res) => {
                 commit('setUser', null)
                 commit('setIsLogged', false)
-                commit('setCK', '')
+                commit('setCookie', '')
                 return res
             })
     },

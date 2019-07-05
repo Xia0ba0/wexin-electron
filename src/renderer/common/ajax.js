@@ -41,16 +41,10 @@ error => {
 })
 
 var ajax = {
-    get (url, data, noAlert = false) {
-        let config = {
-            params: {
-                ...data,
-                ck: encodeURIComponent(localStorage.getItem('ck') || '')
-            }
-        }
-        return _ajax.get(url, config)
+    get (url, noAlert = false) {
+        return _ajax.get(url)
             .then(res => {
-                if (res.data.success) {
+                if (res.data.message === 'Success') {
                     return res.data
                 } else {
                     return Promise.reject(res)
@@ -58,12 +52,14 @@ var ajax = {
             })
             .catch(err => {
                 console.log(err)
+                /*
                 if (err.data.errorId === 999) {
                     !noAlert && Message.$error(err.data.message)
                     thisvue.$router.push('/')
                 } else {
                     !noAlert && Message.$error(err.data.message)
                 }
+                */
                 return Promise.reject(err)
             })
     },
@@ -71,28 +67,25 @@ var ajax = {
         let datas = {
             ...data
         }
-        let config = {
-            "Access-Control-Allow-Origin":'http://localhost:9080'
-        }
-
         // let _url = url + '?ck=' + encodeURIComponent(localStorage.getItem('ck') || '')
-        return _ajax.post(_url, JSON.stringify(datas), config)
+        return _ajax.post(_url, JSON.stringify(datas))
             .then(res => {
                 if (res.data.message === 'Success') {
-                    console.log('login success')
-                    return res.data
+                    return res
                 } else {
                     return Promise.reject(res)
                 }
             })
             .catch(err => {
                 console.log(err)
+                /*
                 if (err.data.errorId === 999) {
                     Message.$error(err.data.message)
                     thisvue.$router.push('/')
                 } else {
                     Message.$error(err.data.message)
                 }
+                */
                 return Promise.reject(err)
             })
     },

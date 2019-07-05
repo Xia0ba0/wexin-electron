@@ -8,7 +8,7 @@
   export default {
       created () {
           console.log('创建页面')
-          if (localStorage.getItem('ck')) {
+          if (localStorage.getItem('Cookie')) {
               this.$store.dispatch('getUserInfo').catch(() => {
                   this.$router.push({
                       path: '/'
