@@ -61,7 +61,7 @@ const actions = {
         })
     },
     signUp (store, data) {
-        return ajax.post('/chat/user/sign_up', data)
+        return ajax.post('/user/register', data)
     },
     signOut ({commit}) {
         return ajax.get('user/logout')
