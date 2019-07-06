@@ -25,7 +25,7 @@
                 </p>
                 <p class="text-center">
                     <a href="javascript:void(0)" class="btn btn-login" @click="signIn">登录</a>
-                    <router-link :to="{path: '/regist'}" class="regist-link">或新注册</router-link>
+                    <router-link :to="{path: '/regist'}" class="regist-link">没有账号？注册一个！</router-link>
                 </p>
             </form>
         </div>

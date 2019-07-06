@@ -39,7 +39,7 @@ export default {
     methods: {
         signUp () {
             if (!this.user.name || !this.user.password || !this.user.email) {
-                alert('请填写完整')
+                alert('请填写完整消息')
             } else {
                 this.$store.dispatch('signUp', {
                     ...this.user
