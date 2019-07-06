@@ -69,13 +69,6 @@ var ajax = {
         }
         // let _url = url + '?ck=' + encodeURIComponent(localStorage.getItem('ck') || '')
         return _ajax.post(_url, JSON.stringify(datas))
-            .then(res => {
-                if (res.data.message === 'Success') {
-                    return res
-                } else {
-                    return Promise.reject(res)
-                }
-            })
             .catch(err => {
                 console.log(err)
                 /*

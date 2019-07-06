@@ -46,11 +46,14 @@ export default {
                 })
                     .then(res => {
                         console.log(res.data.message)
-                        if (res.success) {
-                            alert(res.data.message)
+                        //console.log(res.data.Error)
+                        if (res.data.message === "Success") {
+                            alert("注册成功！")
                             this.$router.push({
                                 path: '/'
                             })
+                        }else if(res.data.message === "Error"){
+                            alert(res.data.Error)
                         }
                     })
             }
