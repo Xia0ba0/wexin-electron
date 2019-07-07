@@ -3,14 +3,14 @@
         <div class="bg-wrap">
         </div>
         <div class="login-wrap">
-            <p class="toolbar text-right">
-                <a href="javascript:void(0)" class="popper-link" title="最小化" @click="minimize">
+            <p class="toolbar text-right" style="-webkit-app-region: drag">
+                <a href="javascript:void(0)" class="popper-link" title="最小化" @click="minimize" style="-webkit-app-region: no-drag">
                     <i class="icon icon-minimize"></i>
                 </a>
-                <a href="javascript:void(0)" class="popper-link max-link" title="最大化" @click="maximize">
+                <a href="javascript:void(0)" class="popper-link max-link" title="最大化" @click="maximize" style="-webkit-app-region: no-drag">
                     <i class="icon" :class="maximized ? 'icon-unmaximize' : 'icon-maximize'"></i>
                 </a>
-                <a href="javascript:void(0)" class="popper-link close-link" title="关闭" @click="close">
+                <a href="javascript:void(0)" class="popper-link close-link" title="关闭" @click="close" style="-webkit-app-region: no-drag">
                     <i class="icon icon-close"></i>
                 </a>
             </p>
@@ -58,9 +58,16 @@ export default {
                     ...this.user
                 })
                     .then(res => {
-                        this.$router.push({
+                        //console.log(res.data.message)
+                        //console.log(res.data.Error)
+                        if(res.data.message === "Success"){
+                            this.$router.push({
                             path: '/weixin'
-                        })
+                            })
+                        }
+                        else if(res.data.message === "Error"){
+                            alert(res.data.Error)
+                        }
                     })
             }
         },
