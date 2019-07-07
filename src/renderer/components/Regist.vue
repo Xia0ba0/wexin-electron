@@ -3,6 +3,17 @@
         <div class="bg-wrap">
         </div>
         <div class="regist-wrap">
+            <p class="toolbar text-right" style="-webkit-app-region: drag">
+                <a href="javascript:void(0)" class="popper-link" title="最小化" @click="minimize" style="-webkit-app-region: no-drag">
+                    <i class="icon icon-minimize"></i>
+                </a>
+                <a href="javascript:void(0)" class="popper-link max-link" title="最大化" @click="maximize" style="-webkit-app-region: no-drag">
+                    <i class="icon" :class="maximized ? 'icon-unmaximize' : 'icon-maximize'"></i>
+                </a>
+                <a href="javascript:void(0)" class="popper-link close-link" title="关闭" @click="close" style="-webkit-app-region: no-drag">
+                    <i class="icon icon-close"></i>
+                </a>
+            </p>
             <form>
                 <p>
                     <label>昵称</label>
@@ -26,6 +37,7 @@
     </div>
 </template>
 <script>
+import {ipcRenderer} from 'electron'
 export default {
     data () {
         return {
@@ -33,7 +45,8 @@ export default {
                 name: '',
                 password: '',
                 email: ''
-            }
+            },
+            maximized: false
         }
     },
     methods: {
@@ -45,10 +58,10 @@ export default {
                     ...this.user
                 })
                     .then(res => {
-                        console.log(res.data.message)
+                        //console.log(res.data.message)
                         //console.log(res.data.Error)
                         if (res.data.message === "Success") {
-                            alert("注册成功！")
+                            alert("注册成功！请检测邮箱是否收到验证邮件并进行验证！")
                             this.$router.push({
                                 path: '/'
                             })
@@ -57,6 +70,16 @@ export default {
                         }
                     })
             }
+        },
+        maximize () {
+            ipcRenderer.send('max')
+            this.maximized = !this.maximized
+        },
+        minimize () {
+            ipcRenderer.send('min')
+        },
+        close () {
+            ipcRenderer.send('close')
         }
     }
 }
@@ -121,6 +144,13 @@ export default {
             display: block;
             margin-top: 10px;
             color: inherit;
+        }
+        .toolbar {
+            background-color: #fff;
+            .popper-link {
+                padding: 5px 10px;
+                display: inline-block;
+            }
         }
     }
 </style>
