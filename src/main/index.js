@@ -15,7 +15,7 @@ const winURL = process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`
 
-function createWindow() {
+function createWindow () {
     /**
    * Initial window options
    */
@@ -73,7 +73,6 @@ ipcMain.on('top', e => {
         mainWindow.setAlwaysOnTop(true)
     }
 })
-
 
 /**
  * Auto Updater

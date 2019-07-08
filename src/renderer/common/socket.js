@@ -6,7 +6,7 @@ var websockPromise = null
 var interval = null
 function initWebSocket () {
     websockPromise = new Promise((resolve, reject) => {
-        websock = new WebSocket('ws://richole.cn:9091')
+        websock = new WebSocket('ws://localhost:8090/websocket')
         websock.onopen = (evt) => {
             resolve(websock)
             websocketOpen()
@@ -51,11 +51,12 @@ function websocketclose (e) {
 
 function websocketOpen (e) {
     console.log("连接成功")
+    sendSocket("sssss")
     interval = setInterval(() => {
         sendSocket({
             type: "ping"
         }, () => {})
-    }, 30000)
+    }, 3000)
 }
 
 function sendSocket (data, callback) {
@@ -68,7 +69,5 @@ function sendSocket (data, callback) {
             Message.$error(err.message)
         })
 }
-
-// initWebSocket()
 
 export {initWebSocket, sendSocket}
