@@ -51,11 +51,12 @@ function websocketclose (e) {
 
 function websocketOpen (e) {
     console.log("连接成功")
+    sendSocket("sssss")
     interval = setInterval(() => {
         sendSocket({
             type: "ping"
         }, () => {})
-    }, 30000)
+    }, 3000)
 }
 
 function sendSocket (data, callback) {

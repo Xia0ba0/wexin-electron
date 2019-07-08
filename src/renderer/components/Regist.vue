@@ -58,14 +58,14 @@ export default {
                     ...this.user
                 })
                     .then(res => {
-                        //console.log(res.data.message)
-                        //console.log(res.data.Error)
+                        // console.log(res.data.message)
+                        // console.log(res.data.Error)
                         if (res.data.message === "Success") {
                             alert("注册成功！请检测邮箱是否收到验证邮件并进行验证！")
                             this.$router.push({
                                 path: '/'
                             })
-                        }else if(res.data.message === "Error"){
+                        } else if (res.data.message === "Error") {
                             alert(res.data.Error)
                         }
                     })

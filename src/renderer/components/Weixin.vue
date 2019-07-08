@@ -288,12 +288,12 @@
   </div>
 </template>
 <script>
-import { sendSocket } from "@/common/socket.js";
 import log from "@/common/fs.js";
-import { sendSocket } from "../common/socket";
+import { sendSocket, initWebSocket } from "@/common/socket";
 const { ipcRenderer: ipc } = require("electron");
 export default {
   created() {
+    initWebSocket();
     log.readdir("log/" + this.currentUser._id, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser._id + "/" + file, data => {

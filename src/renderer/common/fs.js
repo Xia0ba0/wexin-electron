@@ -1,11 +1,11 @@
 var fs = require('fs')
 var log = {
-    mkdir (path) {
+    mkdir(path) {
         if (!fs.existsSync(path)) {
             fs.mkdirSync(path)
         }
     },
-    readdir (path, callback) {
+    readdir(path, callback) {
         if (fs.existsSync(path)) {
             fs.readdir(path, function (err, files) {
                 if (err) {
@@ -15,12 +15,12 @@ var log = {
             })
         }
     },
-    write (to, data) {
+    write(to, data) {
         var writeStream = fs.createWriteStream(to)
         writeStream.write(JSON.stringify(data))
         writeStream.end()
     },
-    read (from, callback) {
+    read(from, callback) {
         let JSONString = ''
         var readerStream = fs.createReadStream(from)
         readerStream.setEncoding('UTF8')
