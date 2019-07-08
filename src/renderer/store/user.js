@@ -49,6 +49,26 @@ const actions = {
             return res
         })
     },
+    AddFriend (store, data) {
+        //console.log(data)
+        return ajax.post('/friend/request', data)
+    },
+    ReplyRequest (store, data) {
+        //console.log(data)
+        return ajax.post('/friend/handlerequest', data)
+    },
+    DeleteFriend (store, data) {
+        console.log(data)
+        return ajax.post('/friend/delete', data)
+    },
+    TransportIpAndPort (store, data) {
+        //console.log(data)
+        return ajax.post('/user/address', data)
+    },
+    TransportPublickey (store, data) {
+        //console.log(data)
+        return ajax.post('/user/key', data)
+    },
     signIn ({commit}, data) {
         return ajax.post('/user/login', data).then((res) => {
             console.log(res)
