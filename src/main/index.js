@@ -1,7 +1,7 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain, Menu } from 'electron'
-
+import { initEncryp, startListen } from './crypto'
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -15,7 +15,7 @@ const winURL = process.env.NODE_ENV === 'development'
     ? `http://localhost:9080`
     : `file://${__dirname}/index.html`
 
-function createWindow () {
+function createWindow() {
     /**
    * Initial window options
    */
@@ -35,6 +35,9 @@ function createWindow () {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
+
+    initEncryp(mainWindow)
+    startListen()
 }
 
 app.on('ready', createWindow)
@@ -70,6 +73,8 @@ ipcMain.on('top', e => {
         mainWindow.setAlwaysOnTop(true)
     }
 })
+
+
 /**
  * Auto Updater
  *
