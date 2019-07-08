@@ -6,7 +6,7 @@ var websockPromise = null
 var interval = null
 function initWebSocket () {
     websockPromise = new Promise((resolve, reject) => {
-        websock = new WebSocket('ws://richole.cn:9091')
+        websock = new WebSocket('ws://localhost:8090/websocket')
         websock.onopen = (evt) => {
             resolve(websock)
             websocketOpen()
@@ -68,7 +68,5 @@ function sendSocket (data, callback) {
             Message.$error(err.message)
         })
 }
-
-// initWebSocket()
 
 export {initWebSocket, sendSocket}
