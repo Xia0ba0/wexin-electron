@@ -23,7 +23,7 @@
               </a>
             </li>
             <li>
-              <a href="javascript:void(0)" class="popper-link" @click="DeleteFriend" title="收藏">
+              <a href="javascript:void(0)" class="popper-link" @click="index = 2" title="收藏">
                 <i
                   class="icon"
                   :class="[index === 2 ? 'wechat-green icon-collect' : 'icon-collect-o']"
