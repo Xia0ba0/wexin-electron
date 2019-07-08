@@ -23,7 +23,7 @@
               </a>
             </li>
             <li>
-              <a href="javascript:void(0)" class="popper-link" @click="index = 2" title="收藏">
+              <a href="javascript:void(0)" class="popper-link" @click="DeleteFriend" title="收藏">
                 <i
                   class="icon"
                   :class="[index === 2 ? 'wechat-green icon-collect' : 'icon-collect-o']"
@@ -201,17 +201,41 @@
       </div>
       <div class="chat-box">
         <div class="chat-header">
-          <p class="toolbar">
-            <a href="javascript:void(0)" class="popper-link" title="置顶" @click="placeTop">
+          <p class="toolbar" style="-webkit-app-region: drag">
+            <a
+              href="javascript:void(0)"
+              class="popper-link"
+              title="置顶"
+              @click="placeTop"
+              style="-webkit-app-region: no-drag"
+            >
               <i class="icon icon-zhiding" :class="{sticked: sticked}"></i>
             </a>
-            <a href="javascript:void(0)" class="popper-link" title="最小化" @click="minimize">
+            <a
+              href="javascript:void(0)"
+              class="popper-link"
+              title="最小化"
+              @click="minimize"
+              style="-webkit-app-region: no-drag"
+            >
               <i class="icon icon-minimize"></i>
             </a>
-            <a href="javascript:void(0)" class="popper-link max-link" title="最大化" @click="maximize">
+            <a
+              href="javascript:void(0)"
+              class="popper-link max-link"
+              title="最大化"
+              @click="maximize"
+              style="-webkit-app-region: no-drag"
+            >
               <i class="icon" :class="maximized ? 'icon-unmaximize' : 'icon-maximize'"></i>
             </a>
-            <a href="javascript:void(0)" class="popper-link close-link" title="关闭" @click="close">
+            <a
+              href="javascript:void(0)"
+              class="popper-link close-link"
+              title="关闭"
+              @click="close"
+              style="-webkit-app-region: no-drag"
+            >
               <i class="icon icon-close"></i>
             </a>
           </p>
@@ -351,6 +375,12 @@ export default {
   },
   data() {
     return {
+      friend: {
+        adder: "",
+        receiver: "",
+        action: "",
+        friendemail: ""
+      },
       index: 0,
       searchfocused: false,
       textareafocused: true,
@@ -395,6 +425,60 @@ export default {
     }
   },
   methods: {
+    AddFriend() {
+      //this.friend.receiver = "123";
+      //console.log(this.friend.receiver)
+      if (this.friend.receiver) {
+        this.$store
+          .dispatch("AddFriend", {
+            receiver: this.friend.receiver
+          })
+          .then(res => {
+            if (res.data.message === "Success") {
+              alert(res.data.data);
+            } else {
+              alert("发送失败");
+            }
+          });
+      }
+    },
+    ReplyRequest() {
+      //this.friend.adder = "ckw824153186@163.com";
+      //this.friend.action = "yes";
+      //console.log(this.friend.adder);
+      //console.log(this.friend.action);
+      if (this.friend.action) {
+        this.$store
+          .dispatch("ReplyRequest", {
+            adder: this.friend.adder,
+            action: this.friend.action
+          })
+          .then(res => {
+            if (res.data.message === "Success") {
+              alert(res.data.data);
+            } else {
+              alert("回复失败");
+            }
+          });
+      }
+    },
+    DeleteFriend() {
+      //this.friend.friendemail = "ckw824153186@163.com";
+      //console.log(this.friend.friendemail);
+      if (this.friend.friendemail) {
+        this.$store
+          .dispatch("DeleteFriend", {
+            friendEmail: this.friend.friendemail
+          })
+          .then(res => {
+            if (res.data.message === "Success") {
+              alert(res.data.data);
+            } else {
+              alert("删除好友失败");
+            }
+          });
+      }
+    },
     closePopupPanel(event) {
       var infoBox = this.$refs.userInfo;
       var settingBox = this.$refs.setting;

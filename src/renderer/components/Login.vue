@@ -49,61 +49,85 @@
   </div>
 </template>
 <script>
-import { ipcRenderer } from "electron"
-import  log  from "@/common/fs.js"
+import { ipcRenderer } from "electron";
+import log from "@/common/fs.js";
 
 export default {
-    data () {
-        return {
-            user: {
-                email: "",
-                password: ""
-            },
-            maximized: false
-        }
-    },
-    mounted () {
+  data() {
+    return {
+      user: {
+        email: "",
+        password: ""
+      },
+      maximized: false
+    };
+  },
+  mounted() {
     // if (localStorage.getItem('isLogged')) {
     //     this.$router.push({
     //         "path": '/weixin'
     //     })
     // }
-    },
-    methods: {
-        signIn () {
-            if (this.user.email && this.user.password) {
-                this.$store
-                    .dispatch("signIn", {
-                        ...this.user
-                    })
-                    .then(res => {
-                        if (res.data.message === "Success") {
-                            //startlog(this.email)
-                            this.$router.push({
-                                path: "/weixin"
-                            })
-                        } else if (res.data.message === "Error") {
-                            alert(res.data.Error)
-                        }
-                    })
-            }
-        },
-        maximize () {
-            ipcRenderer.send("max")
-            this.maximized = !this.maximized
-        },
-        minimize () {
-            ipcRenderer.send("min")
-        },
-        close () {
-            ipcRenderer.send("close")
-        }
-    }
-}
+  },
+  methods: {
+    signIn() {
+      if (this.user.email && this.user.password) {
+        this.$store
+          .dispatch("signIn", {
+            ...this.user
+          })
+          .then(res => {
+            if (res.data.message === "Success") {
+              // startlog(this.email)
+              const ip = require("ip");
+              const IPAddress = ip.address();
+              console.log(IPAddress);
+              console.log(window.location.port);
+              this.$store
+                .dispatch("TransportIpAndPort", {
+                  ip: IPAddress,
+                  port: Number(window.location.port)
+                })
+                .then(res => {
+                  if (res.data.message === "Success") {
+                    console.log("Transport IP&PORT Success");
+                  }
+                });
 
-function startlog (email) {
-    log.mkdir("log/") // 创建这个用户log的文件夹
-    log.mkdir("log/" + email + "/") // 创建这个用户log的文件夹
+              this.$store
+                .dispatch("TransportPublickey", {
+                  key: localStorage.getItem("pubKey")
+                })
+                .then(res => {
+                  if (res.data.message === "Success") {
+                    console.log("Transport publickey Success");
+                  }
+                });
+              this.$router.push({
+                path: "/weixin"
+              });
+            } else if (res.data.message === "Error") {
+              alert(res.data.Error);
+            }
+          });
+      }
+    },
+    maximize() {
+      ipcRenderer.send("max");
+      this.maximized = !this.maximized;
+    },
+    minimize() {
+      ipcRenderer.send("min");
+    },
+    close() {
+      ipcRenderer.send("close");
+    }
+  }
+};
+
+function startlog(email) {
+  log.mkdir("log/"); // 创建这个用户log的文件夹
+  log.mkdir("log/" + email + "/"); // 创建这个用户log的文件夹
 }
 </script>
 <style lang="less" scoped>

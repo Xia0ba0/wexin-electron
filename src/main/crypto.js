@@ -32,6 +32,7 @@ function startListen () {
         console.log(cipherChunks.join(''))
 
         mainWindow.webContents.send("aes-en-receiver", cipherChunks.join(''))
+
     })
 
     ipcMain.on('aes-decryption', (event, data, key) => { // aes解密，data是密文，key是密钥

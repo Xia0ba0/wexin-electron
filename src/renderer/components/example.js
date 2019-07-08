@@ -20,7 +20,7 @@ ipcRenderer.on("aes-de-receiver", (event, data) => { // 接收aes明文，传入
     console.log(data)
 })
 
-// ipcRenderer.send("rsa-generate")//发送生成RSA公钥请求
+ipcRenderer.send("rsa-generate")//发送生成RSA公钥请求
 ipcRenderer.on("rsa-keys", (event, pubKey, priKey) => { // 接收公私钥并写入localStorage，使用时根据需求修改该函数体内容
     console.log("pubKey:" + pubKey)
     console.log("priKey:" + priKey)
