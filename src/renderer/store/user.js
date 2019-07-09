@@ -8,7 +8,7 @@ const mutations = {
     setUser (state, data) {
         if (data) {
             state.user = data
-            state.user.image = 'https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png'
+            state.user.image = "https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png"
             localStorage.setItem('username', data.email)
         } else {
             state.user = {}
@@ -99,7 +99,30 @@ const actions = {
         })
     },
     getUsers () {
-        return ajax.get('/friend/get')
+        let contactlists = []
+        return ajax.get('/friend/get').then(res=>{
+            res.data.onlineUsers.map(item=>{
+                contactlists.push({
+                    image:'https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png',
+                    isLogin:true,
+                    name:item.username,
+                    key:item.key,
+                    ip:item.ip,
+                    port:item.port
+                })
+            })
+            res.data.offlineUsers.map(item=>{
+                contactlists.push({
+                    image:'https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png',
+                    isLogin:false,
+                    name:item.username,
+                    key:item.key,
+                    ip:"",
+                    port:0
+                })
+            })
+            return contactlists
+        })
     }
 }
 

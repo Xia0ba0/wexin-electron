@@ -561,8 +561,7 @@ export default {
     getContactlist() {
       // 获取联系人列表
       this.$store.dispatch("getUsers").then(res => {
-        
-        this.contactlists = res.data;
+        this.contactlists = res
         this.checkIsLogin();
       });
     },

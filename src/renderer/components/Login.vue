@@ -77,33 +77,27 @@ export default {
           })
           .then(res => {
             if (res.data.message === "Success") {
-              // startlog(this.email)
-              const ip = require("ip");
-              const IPAddress = ip.address();
-              console.log(IPAddress);
-              console.log(window.location.port);
-              this.$store
-                .dispatch("TransportIpAndPort", {
-                  ip: IPAddress,
-                  port: Number(window.location.port)
-                })
-                .then(res => {
-                  if (res.data.message === "Success") {
-                    console.log("Transport IP&PORT Success");
-                  }
-                });
-
-              this.$store
-                .dispatch("TransportPublickey", {
-                  key: localStorage.getItem("pubKey")
-                })
-                .then(res => {
-                  if (res.data.message === "Success") {
-                    console.log("Transport publickey Success");
-                  }
-                });
-              this.$router.push({
-                path: "/weixin"
+              ipcRenderer.send("rsa-generate"); //发送生成RSA公钥请求
+              ipcRenderer.on("rsa-keys", (event, pubKey, priKey) => {
+                // 接收公私钥并写入localStorage，使用时根据需求修改该函数体内容
+                console.log("pubKey:" + pubKey);
+                console.log("priKey:" + priKey);
+                localStorage.setItem("pubKey", pubKey);
+                localStorage.setItem("priKey", priKey);
+                this.$store
+                  .dispatch("TransportPublickey", {
+                    key: localStorage.getItem("pubKey")
+                  })
+                  .then(res => {
+                    if (res.data.message === "Success") {
+                      console.log("Transport publickey Success");
+                    }
+                  })
+                  .then(res => {
+                    this.$router.push({
+                      path: "/weixin"
+                    });
+                  });
               });
             } else if (res.data.message === "Error") {
               alert(res.data.Error);

@@ -78,14 +78,6 @@ export default {
             // console.log(res.data.message)
             // console.log(res.data.Error)
             if (res.data.message === "Success") {
-              ipcRenderer.send("rsa-generate"); //发送生成RSA公钥请求
-              ipcRenderer.on("rsa-keys", (event, pubKey, priKey) => {
-                // 接收公私钥并写入localStorage，使用时根据需求修改该函数体内容
-                console.log("pubKey:" + pubKey);
-                console.log("priKey:" + priKey);
-                localStorage.setItem("pubKey", pubKey);
-                localStorage.setItem("priKey", priKey);
-              });
               alert("注册成功！请检测邮箱是否收到验证邮件并进行验证！");
               this.$router.push({
                 path: "/"
