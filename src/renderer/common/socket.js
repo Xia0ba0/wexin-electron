@@ -6,7 +6,7 @@ var websockPromise = null
 var interval = null
 function initWebSocket () {
     websockPromise = new Promise((resolve, reject) => {
-        websock = new WebSocket('ws://192.168.43.169:8090/websocket')
+        websock = new WebSocket('ws://localhost:8090/websocket')
         websock.onopen = (evt) => {
             resolve(websock)
             websocketOpen()

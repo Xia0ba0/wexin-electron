@@ -457,26 +457,6 @@ export default {
           });
       }
     },
-    ReplyRequest() {
-      //this.friend.adder = "ckw824153186@163.com";
-      //this.friend.action = "yes";
-      //console.log(this.friend.adder);
-      //console.log(this.friend.action);
-      if (this.friend.action) {
-        this.$store
-          .dispatch("ReplyRequest", {
-            adder: this.friend.adder,
-            action: this.friend.action
-          })
-          .then(res => {
-            if (res.data.message === "Success") {
-              alert(res.data.data);
-            } else {
-              alert(res.data.Error);
-            }
-          });
-      }
-    },
     DeleteFriend(email) {
       //this.friend.friendemail = "ckw824153186@163.com";
       //console.log(email);
@@ -591,10 +571,8 @@ export default {
     },
     pushToRecord(user) {
       // 聊天记录栏新增一条未读消息记录
-      if (user._id === this.currentUser._id) {
-        return;
-      }
-      let record = this.recordlists.filter(item => item._id === user._id)[0];
+      console.log("openChatBox")
+      let record = this.recordlists.filter(item => item.email === user.email)[0];
       if (record) {
         record.lastRecordTime = Date.now();
       } else {
@@ -625,12 +603,12 @@ export default {
     },
     setIsLogin(data, is) {
       this.recordlists.forEach(item => {
-        if (item._id === data.user_id) {
+        if (item.email === data.email) {
           item.isLogin = is;
         }
       });
       this.contactlists.forEach(item => {
-        if (item._id === data.user_id) {
+        if (item.email === data.email) {
           item.isLogin = is;
         }
       });
@@ -638,7 +616,7 @@ export default {
     checkIsLogin() {
       this.recordlists.forEach(recorditem => {
         for (let i = 0; i < this.contactlists.length; i++) {
-          if (recorditem._id === this.contactlists[i]._id) {
+          if (recorditem.email === this.contactlists[i].email) {
             recorditem.isLogin = this.contactlists[i].isLogin;
             break;
           }
@@ -647,7 +625,7 @@ export default {
     },
     write() {
       this.recordlists.forEach(item => {
-        var path = "log/" + this.currentUser._id + "/" + item._id + ".log";
+        var path = "log/" + this.currentUser.email + "/" + item.email + ".log";
         log.write(path, {
           ...item
         });
@@ -692,7 +670,7 @@ export default {
         (a, b) => b.lastRecordTime - a.lastRecordTime
       );
       lists.forEach((item, index) => {
-        if (item._id === this.chattingUser._id) {
+        if (item.email === this.chattingUser.email) {
           this.activeIndex = index;
         }
       });
