@@ -319,7 +319,7 @@
 </template>
 <script>
 import log from "@/common/fs.js";
-import { sendSocket, initWebSocket } from "@/common/socket";
+import { sendSocket, closeSocket, initWebSocket } from "@/common/socket";
 const { ipcRenderer: ipc } = require("electron");
 export default {
   created() {
@@ -562,6 +562,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("signOut").then(res => {
+         closeSocket();
         if (res.message === "Success") {
           this.$router.push({
             path: "/"

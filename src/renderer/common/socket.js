@@ -6,7 +6,7 @@ var websockPromise = null
 var interval = null
 function initWebSocket () {
     websockPromise = new Promise((resolve, reject) => {
-        websock = new WebSocket('ws://localhost:8090/websocket')
+        websock = new WebSocket('ws://192.168.43.169:8090/websocket')
         websock.onopen = (evt) => {
             resolve(websock)
             websocketOpen()
@@ -27,10 +27,10 @@ function initWebSocket () {
 // 数据接收
 function websocketonmessage (e) {
     console.log(e.data)
-    if(e.data === 'RefreshFriends'){
+    if(e.data === 'Refresh'){
         Bus.$emit('onRefreshFriends')
     }
-    Bus.$emit('onmessage', data)
+    Bus.$emit('onmessage', e.data)
 }
 
 // 数据发送
@@ -46,7 +46,7 @@ function websocketclose (e) {
 
 function websocketOpen (e) {
     console.log("连接成功")
-    sendSocket("sssss")
+    sendSocket("连接成功")
     interval = setInterval(() => {
         sendSocket({
             type: "ping"
@@ -65,4 +65,8 @@ function sendSocket (data, callback) {
         })
 }
 
-export {initWebSocket, sendSocket}
+function closeSocket(){
+    websock.close()
+}
+
+export {initWebSocket, sendSocket, closeSocket}
