@@ -26,14 +26,9 @@ function initWebSocket () {
 
 // 数据接收
 function websocketonmessage (e) {
-    let data = JSON.parse(e.data)
-    if (!data.success) {
-        if (data.errorId === 20001) { // 验证身份失效，需要重新登录
-            Message.$error(data.message)
-        }
-    }
-    if (data.type === 'logout') {
-        Bus.$emit('sockonlogout', data)
+    console.log(e.data)
+    if(e.data === 'RefreshFriends'){
+        Bus.$emit('onRefreshFriends')
     }
     Bus.$emit('onmessage', data)
 }
@@ -56,7 +51,7 @@ function websocketOpen (e) {
         sendSocket({
             type: "ping"
         }, () => {})
-    }, 3000)
+    }, 30000)
 }
 
 function sendSocket (data, callback) {

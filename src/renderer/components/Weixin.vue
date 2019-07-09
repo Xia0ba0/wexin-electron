@@ -323,7 +323,7 @@ import { sendSocket, initWebSocket } from "@/common/socket";
 const { ipcRenderer: ipc } = require("electron");
 export default {
   created() {
-    //initWebSocket();
+    initWebSocket();
     /*log.readdir("log/" + this.currentUser._id, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser._id + "/" + file, data => {
@@ -335,6 +335,10 @@ export default {
   mounted() {
     this.getContactlist();
     this.scrollToBottom();
+    this.$EventBus.$on("onRefreshFriends",data=>{
+      this.getContactlist();
+    });
+
     this.$EventBus.$on("onmessage", data => {
       if (data.type === "login") {
         this.setIsLogin(data, true);
