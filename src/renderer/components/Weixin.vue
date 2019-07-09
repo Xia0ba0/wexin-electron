@@ -319,11 +319,11 @@
 </template>
 <script>
 import log from "@/common/fs.js";
-import { sendSocket, initWebSocket } from "@/common/socket";
+import { sendSocket, closeSocket, initWebSocket } from "@/common/socket";
 const { ipcRenderer: ipc } = require("electron");
 export default {
   created() {
-    //initWebSocket();
+    initWebSocket();
     /*log.readdir("log/" + this.currentUser._id, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser._id + "/" + file, data => {
@@ -335,6 +335,10 @@ export default {
   mounted() {
     this.getContactlist();
     this.scrollToBottom();
+    this.$EventBus.$on("onRefreshFriends",data=>{
+      this.getContactlist();
+    });
+
     this.$EventBus.$on("onmessage", data => {
       if (data.type === "login") {
         this.setIsLogin(data, true);
@@ -559,6 +563,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("signOut").then(res => {
+         closeSocket();
         if (res.message === "Success") {
           this.$router.push({
             path: "/"

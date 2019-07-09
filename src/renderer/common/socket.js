@@ -6,7 +6,7 @@ var websockPromise = null
 var interval = null
 function initWebSocket () {
     websockPromise = new Promise((resolve, reject) => {
-        websock = new WebSocket('ws://localhost:8090/websocket')
+        websock = new WebSocket('ws://192.168.43.169:8090/websocket')
         websock.onopen = (evt) => {
             resolve(websock)
             websocketOpen()
@@ -26,16 +26,11 @@ function initWebSocket () {
 
 // 数据接收
 function websocketonmessage (e) {
-    let data = JSON.parse(e.data)
-    if (!data.success) {
-        if (data.errorId === 20001) { // 验证身份失效，需要重新登录
-            Message.$error(data.message)
-        }
+    console.log(e.data)
+    if(e.data === 'Refresh'){
+        Bus.$emit('onRefreshFriends')
     }
-    if (data.type === 'logout') {
-        Bus.$emit('sockonlogout', data)
-    }
-    Bus.$emit('onmessage', data)
+    Bus.$emit('onmessage', e.data)
 }
 
 // 数据发送
@@ -51,12 +46,12 @@ function websocketclose (e) {
 
 function websocketOpen (e) {
     console.log("连接成功")
-    sendSocket("sssss")
+    sendSocket("连接成功")
     interval = setInterval(() => {
         sendSocket({
             type: "ping"
         }, () => {})
-    }, 3000)
+    }, 30000)
 }
 
 function sendSocket (data, callback) {
@@ -70,4 +65,8 @@ function sendSocket (data, callback) {
         })
 }
 
-export {initWebSocket, sendSocket}
+function closeSocket(){
+    websock.close()
+}
+
+export {initWebSocket, sendSocket, closeSocket}
