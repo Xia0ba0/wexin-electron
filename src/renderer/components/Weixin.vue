@@ -193,8 +193,8 @@
                   </span>
                 </div>
                 <div class="li-delete">
-                  <a href="javascript:void(0)" class="contact-plus">
-                    <i class="icon icon-plus"></i>
+                  <a href="javascript:void(0)" class="contact-delete" @click="DeleteFriend(people.email)">
+                    <i class="icon icon-close"></i>
                   </a>
                 </div>
               </li>
@@ -469,19 +469,20 @@ export default {
           });
       }
     },
-    DeleteFriend() {
+    DeleteFriend(email) {
       //this.friend.friendemail = "ckw824153186@163.com";
-      //console.log(this.friend.friendemail);
-      if (this.friend.friendemail) {
+      //console.log(email);
+      if (email) {
         this.$store
           .dispatch("DeleteFriend", {
-            friendEmail: this.friend.friendemail
+            friendEmail: email
           })
           .then(res => {
             if (res.data.message === "Success") {
+              this.getContactlist();
               alert(res.data.data);
             } else {
-              alert("删除好友失败");
+              alert(res.data.Error);
             }
           });
       }
@@ -910,6 +911,25 @@ export default {
     .icon-plus {
       font-size: 16px;
     }
+  }
+  .li-delete {
+    margin-left: 120px;
+  }
+  .contact-delete {
+    position: relative;
+    top: 20%;
+    padding: 4px;
+    background-color: #d7d5d4;
+    border-radius: 4px;
+    .icon-close {
+      font-size: 20px;
+    }
+  }
+  .contact-delete:hover {
+    background-color: #bdbdbd;
+  }
+  .contact-plus:hover {
+    background-color: #bdbdbd;
   }
   .recordlist .li-img {
     position: relative;

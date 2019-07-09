@@ -99,6 +99,7 @@ const actions = {
         return ajax.get('/friend/get').then(res=>{
             res.data.onlineUsers.map(item=>{
                 contactlists.push({
+                    email:item.email,
                     image:'https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png',
                     isLogin:true,
                     name:item.username,
@@ -109,6 +110,7 @@ const actions = {
             })
             res.data.offlineUsers.map(item=>{
                 contactlists.push({
+                    email:item.email,
                     image:'https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png',
                     isLogin:false,
                     name:item.username,
