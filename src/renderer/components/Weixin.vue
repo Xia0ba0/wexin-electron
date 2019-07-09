@@ -193,7 +193,11 @@
                   </span>
                 </div>
                 <div class="li-delete">
-                  <a href="javascript:void(0)" class="contact-delete" @click="DeleteFriend(people.email)">
+                  <a
+                    href="javascript:void(0)"
+                    class="contact-delete"
+                    @click="DeleteFriend(people.email)"
+                  >
                     <i class="icon icon-close"></i>
                   </a>
                 </div>
@@ -324,6 +328,7 @@ const { ipcRenderer: ipc } = require("electron");
 export default {
   created() {
     initWebSocket();
+    this.getContactlist();
     /*log.readdir("log/" + this.currentUser._id, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser._id + "/" + file, data => {
@@ -333,9 +338,8 @@ export default {
     });*/
   },
   mounted() {
-    this.getContactlist();
     this.scrollToBottom();
-    this.$EventBus.$on("onRefreshFriends",data=>{
+    this.$EventBus.$on("onRefreshFriends", data => {
       this.getContactlist();
     });
 
@@ -563,7 +567,7 @@ export default {
     },
     logout() {
       this.$store.dispatch("signOut").then(res => {
-         closeSocket();
+        closeSocket();
         if (res.message === "Success") {
           this.$router.push({
             path: "/"
