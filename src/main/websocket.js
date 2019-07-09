@@ -19,11 +19,10 @@ function initSocketServer(mainWindow) {
 
             if(data.type === 'request'){
                 ws.email = data.email
-                ServerMainWindow.webContents.send("newConnection",ws.email, data)
+                ServerMainWindow.webContents.send("newConnection",ws.email, data.key)
             }else if(data.type === 'response'){
                 ws.email = data.email
-                connections[data.email] = ws
-                ServerMainWindow.webContents.send("connectionConfirm", ws.email.data)
+                ServerMainWindow.webContents.send("connectionConfirm", ws.email, data.key)
             }
             else if(ws.hasOwnProperty("email")){ // 已经握手成功
                 ServerMainWindow.webContents.send("newMessage",ws.email, data)

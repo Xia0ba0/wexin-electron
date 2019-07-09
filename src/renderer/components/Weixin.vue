@@ -260,7 +260,7 @@
           <div class="chat-content scrolling" ref="chatcontentbox">
             <div class="content-box">
               <div v-for="(content, index) in chattingUser.contents" :key="index">
-                <p class="text-left" v-if="content.user_id != currentUser._id">
+                <p class="text-left" v-if="content.email != currentUser.email">
                   <span>
                     <img :src="chattingUser.image" alt="user-img" class="user-img" />
                   </span>
@@ -324,24 +324,55 @@
 <script>
 import log from "@/common/fs.js";
 import { sendSocket, closeSocket, initWebSocket } from "@/common/socket";
+import {request, response} from "@/common/connect"
 const { ipcRenderer: ipc, remote } = require("electron");
 const crypto = remote.getGlobal("sharedObject").crypto;
 
+const sessions = new Array()
 export default {
   created() {
+    /*建立与服务器的websocket连接*/
     initWebSocket();
+    /* 获取联系人列表*/
     this.getContactlist();
-    ipc.on("newMessage",(event,email,data)=>{
-      console.log(email)
-      console.log(data)
+    /* 监听消息*/
+    ipc.on("newMessage", (event, email, data) => {
+      console.log(email);
+      console.log(data);
+    });
+    /* 监听来自Peer的连接*/
+    ipc.on("newConnection", (event, email, key) => {
+      var MyPubKey = localStorage.getItem('priKey')
+      var requestKey = crypto.rsa_decrypt(key, MyPubKey)
+
+      var responseUser = this.getUserByEmail(email)
+      var responseObject = response(this.currentUser, responseUser)
+
+      sessions[responseUser.email] = {
+        "State":"Responsed",
+        "Key":requestkey + responseObject.responseKey,
+        "Connection":responseObject.connection
+      }
+    });
+
+    /* 主动请求 对方回复之后的监听函数*/
+    ipc.on("connectionConfirm",(event, email, key)=>{
+      var MyPubKey = localStorage.getItem('priKey')
+      var responseKey = crypto.rsa_decrypt(key, MyPubKey)
+
+      sessions[email].Key = sessions[email].Key + responseKey
+      sessions[email].State = "Responsed"
     })
-    /*log.readdir("log/" + this.currentUser._id, files => {
+
+
+    /*读取消息记录*/
+    log.readdir("log/" + this.currentUser.email, files => {
       files.forEach(file => {
-        log.read("log/" + this.currentUser._id + "/" + file, data => {
+        log.read("log/" + this.currentUser.email + "/" + file, data => {
           this.recordlists.push(data);
         });
       });
-    });*/   
+    });
   },
   mounted() {
     this.scrollToBottom();
@@ -508,6 +539,15 @@ export default {
         this.send();
       }
     },
+    createRequest(requestUser){
+      var requestObject = request(this.currentUser, requestUser)
+
+      sessions[requestUser.email] = {
+        "State":"Requesting",
+        "Key":requestObject.requestKey,
+        "Connection":requestObject.connection
+      }
+    },
     send() {
       if (!this.chattingUser.isLogin) {
         this.$warning("该用户是离线状态，不能发送消息");
@@ -525,7 +565,7 @@ export default {
           sendSocket(data);
           let messageData = {
             message: content,
-            user_id: this.currentUser._id,
+            email: this.currentUser.email,
             time: Date.now()
           };
           this.chattingUser.contents.push(messageData);
@@ -568,6 +608,15 @@ export default {
         this.checkIsLogin();
       });
     },
+
+    getUserByEmail(SearchEmail) {
+      this.contactlists.forEach(user => {
+        if (user.email === SearchEmail) {
+          return user;
+        }
+      });
+    },
+
     openChatBox(user, index) {
       // isopen 是否切换至正在聊天
       this.activeIndex = index;
@@ -577,8 +626,10 @@ export default {
     },
     pushToRecord(user) {
       // 聊天记录栏新增一条未读消息记录
-      console.log("openChatBox")
-      let record = this.recordlists.filter(item => item.email === user.email)[0];
+      console.log("openChatBox");
+      let record = this.recordlists.filter(
+        item => item.email === user.email
+      )[0];
       if (record) {
         record.lastRecordTime = Date.now();
       } else {

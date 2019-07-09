@@ -50,6 +50,7 @@
 </template>
 <script>
 import { ipcRenderer, remote } from "electron";
+import log from "@/common/fs.js";
 const crypto = remote.getGlobal("sharedObject").crypto;
 export default {
   data() {
@@ -77,6 +78,9 @@ export default {
           })
           .then(res => {
             if (res.data.message === "Success") {
+              log.mkdir("log/"); // 创建这个用户log的文件夹
+              log.mkdir("log/" + this.user.email + "/"); // 创建这个用户log的文件夹
+
               var keyObject = crypto.rsa_generate();
               localStorage.setItem("pubKey", keyObject.pubKey);
               localStorage.setItem("priKey", keyObject.priKey);
