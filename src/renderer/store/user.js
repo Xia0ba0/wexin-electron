@@ -63,10 +63,6 @@ const actions = {
         console.log(data)
         return ajax.post('/friend/delete', data)
     },
-    TransportIpAndPort (store, data) {
-        //console.log(data)
-        return ajax.post('/user/address', data)
-    },
     TransportPublickey (store, data) {
         //console.log(data)
         return ajax.post('/user/key', data)

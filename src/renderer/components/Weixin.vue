@@ -101,6 +101,7 @@
             <input
               type="text"
               placeholder="搜索"
+              v-model="friend.receiver"
               @focus="searchfocused = true;textareafocused=false"
               @blur="searchfocused = false;textareafocused=true"
             />
@@ -112,11 +113,11 @@
               <i class="icon icon-close"></i>
             </label>
           </span>
-          <a href="javascript:void(0)" class="contact-plus">
+          <a href="javascript:void(0)" class="contact-plus" @click="AddFriend">
             <i class="icon icon-plus"></i>
           </a>
         </div>
-        <div class="search-list list" v-if="searchfocused">
+        <div class="search-list list" v-if="false">
           <div class="search-header">
             <label>更多</label>
           </div>
@@ -190,6 +191,11 @@
                   <span class="name">
                     <label>{{people.name}}</label>
                   </span>
+                </div>
+                <div class="li-delete">
+                  <a href="javascript:void(0)" class="contact-plus">
+                    <i class="icon icon-plus"></i>
+                  </a>
                 </div>
               </li>
             </ul>
@@ -435,6 +441,7 @@ export default {
           })
           .then(res => {
             if (res.data.message === "Success") {
+              this.getContactlist();
               alert(res.data.data);
             } else {
               alert(res.data.Error);
@@ -561,7 +568,7 @@ export default {
     getContactlist() {
       // 获取联系人列表
       this.$store.dispatch("getUsers").then(res => {
-        this.contactlists = res
+        this.contactlists = res;
         this.checkIsLogin();
       });
     },
