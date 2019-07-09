@@ -49,8 +49,8 @@
   </div>
 </template>
 <script>
-import { ipcRenderer } from "electron";
-
+import { ipcRenderer, remote } from "electron";
+const crypto = remote.getGlobal("sharedObject").crypto;
 export default {
   data() {
     return {
@@ -77,28 +77,23 @@ export default {
           })
           .then(res => {
             if (res.data.message === "Success") {
-              ipcRenderer.send("rsa-generate"); //发送生成RSA公钥请求
-              ipcRenderer.on("rsa-keys", (event, pubKey, priKey) => {
-                // 接收公私钥并写入localStorage，使用时根据需求修改该函数体内容
-                console.log("pubKey:" + pubKey);
-                console.log("priKey:" + priKey);
-                localStorage.setItem("pubKey", pubKey);
-                localStorage.setItem("priKey", priKey);
-                this.$store
-                  .dispatch("TransportPublickey", {
-                    key: localStorage.getItem("pubKey")
-                  })
-                  .then(res => {
-                    if (res.data.message === "Success") {
-                      console.log("Transport publickey Success");
-                    }
-                  })
-                  .then(res => {
-                    this.$router.push({
-                      path: "/weixin"
-                    });
+              var keyObject = crypto.rsa_generate();
+              localStorage.setItem("pubKey", keyObject.pubKey);
+              localStorage.setItem("priKey", keyObject.priKey);
+              this.$store
+                .dispatch("TransportPublickey", {
+                  key: localStorage.getItem("pubKey")
+                })
+                .then(res => {
+                  if (res.data.message === "Success") {
+                    console.log("Transport publickey Success");
+                  }
+                })
+                .then(res => {
+                  this.$router.push({
+                    path: "/weixin"
                   });
-              });
+                });
             } else if (res.data.message === "Error") {
               alert(res.data.Error);
             }

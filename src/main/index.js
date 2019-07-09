@@ -1,7 +1,14 @@
 'use strict'
 
 import { app, BrowserWindow, ipcMain, Menu } from 'electron'
-import { initEncryp, startListen } from './crypto'
+import  Mycrypto  from './crypto'
+import initSocketServer from './websocket'
+
+
+
+global.sharedObject = {
+    crypto: Mycrypto
+  }
 /**
  * Set `__static` path to static files in production
  * https://simulatedgreg.gitbooks.io/electron-vue/content/en/using-static-assets.html
@@ -35,9 +42,7 @@ function createWindow () {
     mainWindow.on('closed', () => {
         mainWindow = null
     })
-
-    initEncryp(mainWindow)
-    startListen()
+    initSocketServer(mainWindow)
 }
 
 app.on('ready', createWindow)

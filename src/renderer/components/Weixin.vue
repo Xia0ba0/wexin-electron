@@ -324,18 +324,24 @@
 <script>
 import log from "@/common/fs.js";
 import { sendSocket, closeSocket, initWebSocket } from "@/common/socket";
-const { ipcRenderer: ipc } = require("electron");
+const { ipcRenderer: ipc, remote } = require("electron");
+const crypto = remote.getGlobal("sharedObject").crypto;
+
 export default {
   created() {
     initWebSocket();
     this.getContactlist();
+    ipc.on("newMessage",(event,email,data)=>{
+      console.log(email)
+      console.log(data)
+    })
     /*log.readdir("log/" + this.currentUser._id, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser._id + "/" + file, data => {
           this.recordlists.push(data);
         });
       });
-    });*/
+    });*/   
   },
   mounted() {
     this.scrollToBottom();
