@@ -317,14 +317,14 @@ import { sendSocket, initWebSocket } from "@/common/socket";
 const { ipcRenderer: ipc } = require("electron");
 export default {
   created() {
-    initWebSocket();
-    log.readdir("log/" + this.currentUser._id, files => {
+    //initWebSocket();
+    /*log.readdir("log/" + this.currentUser._id, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser._id + "/" + file, data => {
           this.recordlists.push(data);
         });
       });
-    });
+    });*/
   },
   mounted() {
     this.getContactlist();
@@ -437,7 +437,7 @@ export default {
             if (res.data.message === "Success") {
               alert(res.data.data);
             } else {
-              alert("发送失败");
+              alert(res.data.Error);
             }
           });
       }
@@ -457,7 +457,7 @@ export default {
             if (res.data.message === "Success") {
               alert(res.data.data);
             } else {
-              alert("回复失败");
+              alert(res.data.Error);
             }
           });
       }
@@ -561,6 +561,7 @@ export default {
     getContactlist() {
       // 获取联系人列表
       this.$store.dispatch("getUsers").then(res => {
+        
         this.contactlists = res.data;
         this.checkIsLogin();
       });

@@ -50,7 +50,6 @@
 </template>
 <script>
 import { ipcRenderer } from "electron";
-import log from "@/common/fs.js";
 
 export default {
   data() {
@@ -124,11 +123,6 @@ export default {
     }
   }
 };
-
-function startlog(email) {
-  log.mkdir("log/"); // 创建这个用户log的文件夹
-  log.mkdir("log/" + email + "/"); // 创建这个用户log的文件夹
-}
 </script>
 <style lang="less" scoped>
 .login-page {

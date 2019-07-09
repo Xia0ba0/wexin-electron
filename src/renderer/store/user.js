@@ -6,9 +6,10 @@ const state = {
 
 const mutations = {
     setUser (state, data) {
-        if (data && JSON.stringify(data) !== '{}') {
-            state.user = {...data}
-            localStorage.setItem('username', data.name)
+        if (data) {
+            state.user = data
+            state.user.image = 'https://ae01.alicdn.com/kf/HTB1LXf3XuH2gK0jSZFE763qMpXaw.png'
+            localStorage.setItem('username', data.email)
         } else {
             state.user = {}
             localStorage.setItem('username', '')
@@ -32,14 +33,15 @@ const mutations = {
 }
 
 const actions = {
-    getUserInfo (store) {
+    /*getUserInfo (store) {
         return ajax.get('/chat/user/get_user_info', {}, true).then(res => {
             store.commit('setUser', {
                 ...res.data
             })
             return res
         })
-    },
+    },*/
+    /*
     saveUserInfo (store, data) {
         return ajax.post('/chat/user/save_info', data).then(res => {
             alert('保存成功')
@@ -48,7 +50,7 @@ const actions = {
             })
             return res
         })
-    },
+    },*/
     AddFriend (store, data) {
         //console.log(data)
         return ajax.post('/friend/request', data)
@@ -71,10 +73,8 @@ const actions = {
     },
     signIn ({commit}, data) {
         return ajax.post('/user/login', data).then((res) => {
-            console.log(res)
-            commit('setUser', {
-                ...res.data.userInfo
-            })
+            console.log(data)
+            commit('setUser',data)
             commit('setIsLogged', true)
             commit('setCookie', res.data.Cookie)
             return res
@@ -99,7 +99,7 @@ const actions = {
         })
     },
     getUsers () {
-        return ajax.get('/chat/user/get_users')
+        return ajax.get('/friend/get')
     }
 }
 
