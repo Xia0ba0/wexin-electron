@@ -3,7 +3,7 @@ import {Loading} from 'element-ui'
 import thisvue from '../main.js'
 import Message from '../plugin/message'
 var options = {
-    baseURL: 'http://192.168.43.169:8090',
+    baseURL: 'http://localhost:8090',
     withCredentials: true
 }
 var _ajax = axios.create(options)

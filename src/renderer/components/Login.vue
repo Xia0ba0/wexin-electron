@@ -124,7 +124,7 @@ export default {
     width: 100%;
     height: 100%;
     overflow: hidden;
-    background-image: url("~@/assets/images/bg.jpg");
+    background-image: url("~@/assets/images/8.jpg");
     background-size: cover;
     background-position: center;
   }
@@ -138,19 +138,20 @@ export default {
   }
   form {
     width: 460px;
-    height: 440px;
+    height: 360px;
     margin: 0 auto;
     position: absolute;
-    top: 50%;
+    top: 52.5%;
     left: 50%;
     transform: translate(-50%, -50%);
     background: #fff;
     border-radius: 5px;
-    padding: 50px;
+    padding: 45px 50px 30px 50px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
     justify-content: space-around;
+    box-shadow: 0 0 20px 1px #4b4b4b;
     p {
       label {
         display: block;
@@ -162,6 +163,9 @@ export default {
         border-radius: 3px;
         border: 1px solid #ccc;
         font-size: 14px;
+        &:focus {
+          border:1px solid #4aa8ff;
+        }
       }
     }
   }
@@ -169,21 +173,30 @@ export default {
     display: inline-block;
     width: 60px;
     padding: 10px;
-    border-radius: 3px;
-    background-color: #009688;
-    border: 1px solid #038075;
-    color: #fff;
+    border-radius: 15px;
+    background-color: #ffffff;
+    border: 1.5px solid #2192da;
+    color: #2192da;
+    &:hover {
+      background-color: #2192da;
+      color: #ffffff;
+    }
   }
   .regist-link {
     display: block;
-    margin-top: 10px;
+    margin-top: 8px;
+    font-size: 15px;
     color: inherit;
   }
   .toolbar {
     background-color: #fff;
+    opacity:0.6;
     .popper-link {
       padding: 5px 10px;
       display: inline-block;
+      &:hover{
+        background-color: #c7c7c7;
+      }
     }
   }
 }
