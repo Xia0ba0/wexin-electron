@@ -11,23 +11,12 @@
             </li>
             <li>
               <a href="javascript:void(0)" class="popper-link" @click="index = 0" title="聊天">
-                <i class="icon" :class="[index === 0 ? 'wechat-green icon-chat' : 'icon-chat-o']"></i>
+                <i class="icon" :class="[index === 0  ? 'white icon-chat-o' : 'icon-chat-o']"></i>
               </a>
             </li>
             <li>
               <a href="javascript:void(0)" class="popper-link" @click="index = 1" title="通讯录">
-                <i
-                  class="icon"
-                  :class="[index === 1 ? 'wechat-green icon-user-list' : 'icon-user-list-o']"
-                ></i>
-              </a>
-            </li>
-            <li>
-              <a href="javascript:void(0)" class="popper-link" @click="index = 2" title="收藏">
-                <i
-                  class="icon"
-                  :class="[index === 2 ? 'wechat-green icon-collect' : 'icon-collect-o']"
-                ></i>
+                <i class="icon" :class="[index === 1 ? 'white icon-user-list-o' : 'icon-user-list-o']"></i>
               </a>
             </li>
           </ul>
@@ -58,7 +47,7 @@
               </span>
             </div>
             <div class="img-box">
-              <img :src="currentUser.image" alt="user-img" />
+              <img :src="currentUser.image" alt="user-img" class="user-img" />
             </div>
           </div>
           <p class="text-left address-panel">
@@ -788,8 +777,8 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.wechat-green {
-  color: #09bb07 !important;
+.white {
+  color: #fff !important;
 }
 .main-box {
   width: 100%;
@@ -799,6 +788,7 @@ export default {
   position: relative;
 }
 .navbar {
+  background-image: url("~@/assets/images/9.jpg");
   background-color: #28282b;
   color: #fff;
   width: 60px;
@@ -812,14 +802,51 @@ export default {
     margin-top: 24px;
   }
   .navbar-top img {
-    width: 50%;
+    width: 35px;
+    height: 35px;
+    vertical-align: middle;
+    border-radius: 7px;
   }
+  /*.icon {
+    font-size: 26px;
+    color: #a4a4a4;
+    &:hover {
+      color: #2192da;
+    }
+    &:active {
+      color: #027ac7;
+    }
+  }*/
   .icon {
     font-size: 26px;
-    color: #666;
+    font-weight: 500;
   }
   .navbar-top .icon-chat-o {
-    font-weight: 600;
+    color: #a4a4a4;
+    &:hover {
+      color: #e4e4e4;
+    }
+    &:active {
+      color: #777777;
+    }
+  }
+  .navbar-top .icon-user-list-o {
+    color: #a4a4a4;
+    &:hover {
+      color: #e4e4e4;
+    }
+    &:active {
+      color: #777777;
+    }
+  }
+  .icon-setting {
+    color: #a4a4a4;
+    &:hover {
+      color: #e4e4e4;
+    }
+    &:active {
+      color: #777777;
+    }
   }
   .navbar-bottom {
     position: absolute;
@@ -863,9 +890,11 @@ export default {
       }
     }
     .img-box {
-      height: 60px;
       img {
         width: 60px;
+        height: 60px;
+        vertical-align: middle;
+        border-radius: 20px;
       }
     }
     .icon-girl {
@@ -1003,12 +1032,16 @@ export default {
     padding: 4px;
     background-color: #dbd9d8;
     border-radius: 4px;
+    &:hover {
+      background-color: #bdbdbd;
+    }
     .icon-plus {
       font-size: 16px;
     }
   }
   .li-delete {
-    margin-left: 120px;
+    margin-left: auto;
+    margin-right: 10px;
   }
   .contact-delete {
     position: relative;
@@ -1016,15 +1049,12 @@ export default {
     padding: 4px;
     background-color: #d7d5d4;
     border-radius: 4px;
+    &:hover {
+      background-color: #bdbdbd;
+    }
     .icon-close {
       font-size: 20px;
     }
-  }
-  .contact-delete:hover {
-    background-color: #bdbdbd;
-  }
-  .contact-plus:hover {
-    background-color: #bdbdbd;
   }
   .recordlist .li-img {
     position: relative;
@@ -1066,6 +1096,7 @@ export default {
       box-sizing: border-box;
       user-select: none;
       cursor: pointer;
+      align-items: center;
       &:hover {
         background-color: #d7d5d4;
       }
@@ -1078,6 +1109,7 @@ export default {
         width: 40px;
         height: 40px;
         vertical-align: middle;
+        border-radius: 10px;
       }
       a {
         display: inline-flex;
@@ -1220,7 +1252,9 @@ export default {
     }
     .user-img {
       width: 40px;
-      vertical-align: top;
+      height: 40px;
+      vertical-align: middle;
+      border-radius: 10px;
     }
     .content {
       margin: 0 15px;
@@ -1232,6 +1266,8 @@ export default {
       display: inline-block;
       max-width: 280px;
       border-radius: 3px;
+      word-wrap: break-word;
+      word-break: break-all;
     }
     .content-left:before {
       position: absolute;
