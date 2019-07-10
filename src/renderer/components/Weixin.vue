@@ -59,25 +59,9 @@
               <label class="address-value">{{currentUser.address}}</label>
             </span>
           </p>
-          <p class="popup-bottom clearfix">
-            <span class="float-left">
-              <router-link :to="{path: '/info'}">编辑信息</router-link>
-            </span>
-            <span class="float-right">
-              <a href="javascript:void(0)">
-                <i class="icon icon-share"></i>
-              </a>
-              <a href="javascript:void(0)">
-                <i class="icon icon-chat-o"></i>
-              </a>
-            </span>
-          </p>
         </div>
         <div class="setting-popup" v-show="settingPopuped" ref="setting">
           <ul>
-            <li>
-              <a href="javascript:void(0)">关于</a>
-            </li>
             <li>
               <a href="javascript:void(0)" @click="logout">退出登录</a>
             </li>
@@ -207,15 +191,6 @@
             <a
               href="javascript:void(0)"
               class="popper-link"
-              title="置顶"
-              @click="placeTop"
-              style="-webkit-app-region: no-drag"
-            >
-              <i class="icon icon-zhiding" :class="{sticked: sticked}"></i>
-            </a>
-            <a
-              href="javascript:void(0)"
-              class="popper-link"
               title="最小化"
               @click="minimize"
               style="-webkit-app-region: no-drag"
@@ -239,12 +214,6 @@
               style="-webkit-app-region: no-drag"
             >
               <i class="icon icon-close"></i>
-            </a>
-          </p>
-          <p class="namebar">
-            <label class="name">{{chattingUser.name}}</label>
-            <a href="javascript:void(0)" class="more-link">
-              <i class="icon icon-more"></i>
             </a>
           </p>
         </div>
@@ -286,20 +255,6 @@
                     accept="image/png, image/gif, image/jpeg"
                     style="position: absolute;left: 0;bottom: 0;opacity: 0;"
                   />
-                </a>
-                <a href="javascript:void(0)" class="popper-link" title="截图">
-                  <i class="icon icon-jianqie"></i>
-                </a>
-                <a href="javascript:void(0)" class="popper-link liaotianjilu" title="聊天记录">
-                  <i class="icon icon-liaotianjilu"></i>
-                </a>
-              </p>
-              <p class="toolbar-right">
-                <a href="javascript:void(0)" class="popper-link" title="语音聊天">
-                  <i class="icon icon-dianhua"></i>
-                </a>
-                <a href="javascript:void(0)" class="popper-link" title="视频聊天">
-                  <i class="icon icon-shipin"></i>
                 </a>
               </p>
             </div>
@@ -876,7 +831,7 @@ export default {
   }
   .info-popup {
     width: 300px;
-    height: 228px;
+    height: 178px;
     position: absolute;
     top: 40px;
     left: 30px;
@@ -965,8 +920,9 @@ export default {
     position: absolute;
     left: 60px;
     bottom: 30px;
-    background-color: rgba(0, 0, 0, 0.75);
-    color: #aaa;
+    background-color: #ffffff;
+    color: #000;
+    box-shadow: 0 0 2px 0.01px #4b4b4b;
     li {
       margin-top: 0;
       height: 40px;
@@ -1189,7 +1145,7 @@ export default {
   background: #f5f5f5;
   position: relative;
   .chat-header {
-    height: 60px;
+    height: 26px;
     display: flex;
     flex-direction: column;
     border-bottom: solid 1px #ccc;
@@ -1248,7 +1204,7 @@ export default {
     }
   }
   .chat-body {
-    height: calc(100% - 61px);
+    height: calc(100% - 27px);
     position: relative;
   }
   .chat-content {
