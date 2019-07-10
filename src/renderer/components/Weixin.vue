@@ -481,7 +481,7 @@ export default {
           .then(res => {
             if (res.data.message === "Success") {
               this.getContactlist();
-              alert(res.data.data);
+              alert("Add successfully");
             } else {
               alert(res.data.Error);
             }
