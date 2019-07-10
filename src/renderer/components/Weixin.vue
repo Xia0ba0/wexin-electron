@@ -16,7 +16,10 @@
             </li>
             <li>
               <a href="javascript:void(0)" class="popper-link" @click="index = 1" title="通讯录">
-                <i class="icon" :class="[index === 1 ? 'white icon-user-list-o' : 'icon-user-list-o']"></i>
+                <i
+                  class="icon"
+                  :class="[index === 1 ? 'white icon-user-list-o' : 'icon-user-list-o']"
+                ></i>
               </a>
             </li>
           </ul>
@@ -272,6 +275,17 @@
                 </a>
                 <a href="javascript:void(0)" class="popper-link" title="发送文件">
                   <i class="icon icon-wenjianjia"></i>
+                  <label
+                    for="userimage-upload"
+                    style="position: absolute;left: 68px;top: 10px;width: 21px;height: 20.8px;text-align: center;"
+                  ></label>
+                  <input
+                    type="file"
+                    name="userimage"
+                    id="userimage-upload"
+                    accept="image/png, image/gif, image/jpeg"
+                    style="position: absolute;left: 0;bottom: 0;opacity: 0;"
+                  />
                 </a>
                 <a href="javascript:void(0)" class="popper-link" title="截图">
                   <i class="icon icon-jianqie"></i>
@@ -339,14 +353,19 @@ export default {
         time: Date.now()
       };
       if (!record) {
-        record = this.contactlists.filter(item => item.email === messageObject.email)[0];
+        record = this.contactlists.filter(
+          item => item.email === messageObject.email
+        )[0];
         record.contents = [];
         this.recordlists.unshift(record);
       }
       record.lastrecord = messageObject.message;
       record.lastRecordTime = messageData.time;
       record.contents.push(messageData);
-      if (this.chattingUser && messageObject.email !== this.chattingUser.email) {
+      if (
+        this.chattingUser &&
+        messageObject.email !== this.chattingUser.email
+      ) {
         // 不是正在聊天的窗口，不默认打开聊天框
         record.unreads = record.unreads + 1 || 1;
       } else {
@@ -575,7 +594,7 @@ export default {
       }
       if (sessions[this.chattingUser.email].State !== "Responsed") {
         this.$warning("正在建立p2p连接");
-        console.log(sessions)
+        console.log(sessions);
         return;
       }
       if (this.chatcontent) {

@@ -163,7 +163,7 @@ export default {
         border: 1px solid #ccc;
         font-size: 14px;
         &:focus {
-          border:1px solid #4aa8ff;
+          border: 1px solid #4aa8ff;
         }
       }
     }
@@ -189,11 +189,11 @@ export default {
   }
   .toolbar {
     background-color: #fff;
-    opacity:0.6;
+    opacity: 0.6;
     .popper-link {
       padding: 5px 10px;
       display: inline-block;
-      &:hover{
+      &:hover {
         background-color: #c7c7c7;
       }
     }
