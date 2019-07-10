@@ -27,7 +27,13 @@ function initSocketServer(mainWindow) {
             else if(ws.hasOwnProperty("email")){ // 已经握手成功
                 ServerMainWindow.webContents.send("newMessage",ws.email, data)
             }else{
-                ws.close()
+                console.log(message)
+            }
+        });
+
+        ws.on('close',()=>{
+            if(ws.hasOwnProperty("email")){
+                ServerMainWindow.webContents.send("connectionClose",ws.email)
             }
         })
     });

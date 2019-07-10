@@ -324,11 +324,11 @@
 <script>
 import log from "@/common/fs.js";
 import { sendSocket, closeSocket, initWebSocket } from "@/common/socket";
-import {request, response} from "@/common/connect"
+import { request, response } from "@/common/connect";
 const { ipcRenderer: ipc, remote } = require("electron");
 const crypto = remote.getGlobal("sharedObject").crypto;
 
-const sessions = new Array()
+const sessions = new Array();
 export default {
   created() {
     /*建立与服务器的websocket连接*/
@@ -337,33 +337,64 @@ export default {
     this.getContactlist();
     /* 监听消息*/
     ipc.on("newMessage", (event, email, data) => {
-      var plainText = crypto.aes_decrypt(data.data, sessions[email].Key)
-      console.log(JSON.parse(plainText))
+      var plainText = crypto.aes_decrypt(data.data, sessions[email].Key);
+      var messageObject = JSON.parse(plainText);
+
+      let record = this.recordlists.filter(
+        item => item.email === messageObject.email
+      )[0];
+      let recordIndex = record ? this.recordlists.indexOf(record) : 0;
+      let messageData = {
+        message: messageObject.message,
+        email: data.email,
+        time: Date.now()
+      };
+      if (!record) {
+        record = this.contactlists.filter(item => item.email === messageObject.email)[0];
+        record.contents = [];
+        this.recordlists.unshift(record);
+      }
+      record.lastrecord = messageObject.message;
+      record.lastRecordTime = messageData.time;
+      record.contents.push(messageData);
+      if (this.chattingUser && messageObject.email !== this.chattingUser.email) {
+        // 不是正在聊天的窗口，不默认打开聊天框
+        record.unreads = record.unreads + 1 || 1;
+      } else {
+        this.activeIndex = recordIndex;
+        this.chattingUser = record;
+      }
+      this.index = 0;
+      this.scrollToBottom();
     });
     /* 监听来自Peer的连接*/
     ipc.on("newConnection", (event, email, key) => {
-      var MyPubKey = localStorage.getItem('priKey')
-      var requestKey = crypto.rsa_decrypt(key, MyPubKey)
+      var MyPriKey = localStorage.getItem("priKey");
+      var requestKey = crypto.rsa_decrypt(key, MyPriKey);
 
-      var responseUser = this.getUserByEmail(email)
-      var responseObject = response(this.currentUser, responseUser)
+      var responseUser = this.getUserByEmail(email);
+      var responseObject = response(this.currentUser, responseUser);
 
       sessions[responseUser.email] = {
-        "State":"Responsed",
-        "Key":requestKey + responseObject.responseKey,
-        "Connection":responseObject.connection
-      }
+        State: "Responsed",
+        Key: requestKey + responseObject.responseKey,
+        Connection: responseObject.connection
+      };
     });
 
     /* 主动请求 对方回复之后的监听函数*/
-    ipc.on("connectionConfirm",(event, email, key)=>{
-      var MyPubKey = localStorage.getItem('priKey')
-      var responseKey = crypto.rsa_decrypt(key, MyPubKey)
+    ipc.on("connectionConfirm", (event, email, key) => {
+      var MyPriKey = localStorage.getItem("priKey");
+      var responseKey = crypto.rsa_decrypt(key, MyPriKey);
 
-      sessions[email].Key = sessions[email].Key + responseKey
-      sessions[email].State = "Responsed"
-    })
+      sessions[email].Key = sessions[email].Key + responseKey;
+      sessions[email].State = "Responsed";
+    });
 
+    /*当连接关闭 销毁会话对象*/
+    ipc.on("connectionClose", (event, email) => {
+      delete sessions[email];
+    });
 
     /*读取消息记录*/
     log.readdir("log/" + this.currentUser.email, files => {
@@ -539,56 +570,60 @@ export default {
         this.send();
       }
     },
-    createRequest(requestUser){
-      var requestObject = request(this.currentUser, requestUser)
+    createRequest(requestUser) {
+      var requestObject = request(this.currentUser, requestUser);
 
       sessions[requestUser.email] = {
-        "State":"Requesting",
-        "Key":requestObject.requestKey,
-        "Connection":requestObject.connection
-      }
+        State: "Requesting",
+        Key: requestObject.requestKey,
+        Connection: requestObject.connection
+      };
     },
     send() {
       if (!this.chattingUser.isLogin) {
         this.$warning("该用户是离线状态，不能发送消息");
-      } else {
-        if (this.chatcontent) {
-          var content = this.chatcontent
-            .replace(/\r\n/g, "<br/>")
-            .replace(/\n/g, "<br/>")
-            .replace(/\s/g, "&nbsp;");
-          //明文数据序列化
-          var data = JSON.stringify({
-            email: this.chattingUser.email,
-            message: content,
-            type: "message"
-          });
-          // 密文数据套一层对象再次序列化
-          var encryptedData = JSON.stringify({
-            data:crypto.aes_encrypt(data,sessions[this.chattingUser.email].Key)
-          })
-          sessions[this.chattingUser.email].Connection.send(encryptedData)
+        return;
+      }
+      if (sessions[this.chattingUser.email].State !== "Responsed") {
+        this.$warning("正在建立p2p连接");
+        return;
+      }
+      if (this.chatcontent) {
+        var content = this.chatcontent
+          .replace(/\r\n/g, "<br/>")
+          .replace(/\n/g, "<br/>")
+          .replace(/\s/g, "&nbsp;");
+        //明文数据序列化
+        var data = JSON.stringify({
+          email: this.chattingUser.email,
+          message: content,
+          type: "message"
+        });
+        // 密文数据套一层对象再次序列化
+        var encryptedData = JSON.stringify({
+          data: crypto.aes_encrypt(data, sessions[this.chattingUser.email].Key)
+        });
+        sessions[this.chattingUser.email].Connection.send(encryptedData);
 
-          let messageData = {
-            message: content,
-            email: this.currentUser.email,
-            time: Date.now()
-          };
-          this.chattingUser.contents.push(messageData);
-          this.chattingUser.lastrecord = this.chatcontent.replace(
-            /(\n || \s+$)/g,
-            ""
-          );
-          this.chattingUser.lastRecordTime = messageData.time;
-          this.chatcontent = "";
-          this.scrollToBottom();
-        } else {
-          // 不能发送空消息
-          this.errmsgShow = true;
-          setTimeout(() => {
-            this.errmsgShow = false;
-          }, 2000);
-        }
+        let messageData = {
+          message: content,
+          email: this.currentUser.email,
+          time: Date.now()
+        };
+        this.chattingUser.contents.push(messageData);
+        this.chattingUser.lastrecord = this.chatcontent.replace(
+          /(\n || \s+$)/g,
+          ""
+        );
+        this.chattingUser.lastRecordTime = messageData.time;
+        this.chatcontent = "";
+        this.scrollToBottom();
+      } else {
+        // 不能发送空消息
+        this.errmsgShow = true;
+        setTimeout(() => {
+          this.errmsgShow = false;
+        }, 2000);
       }
     },
     scrollToBottom() {
@@ -616,41 +651,48 @@ export default {
     },
 
     getUserByEmail(SearchEmail) {
-      var retValue
+      var retValue;
       this.contactlists.forEach(user => {
         if (user.email === SearchEmail) {
-          retValue =  user;
+          retValue = user;
         }
       });
-      return retValue
+      return retValue;
     },
 
     openChatBox(user, index) {
-      // isopen 是否切换至正在聊天
+      // 判断是否已经建立p2p连接 如果没有
+      // 则判断对方是否在线 同时在线的话 就建立P2p连接
+      if (!sessions.hasOwnProperty(user.email) && user.isLogin) {
+        console.log("连接 " + user.email);
+        this.createRequest(user);
+      }
+
       this.activeIndex = index;
       this.chattingUser = user;
       user.unreads = 0;
       this.scrollToBottom();
     },
     pushToRecord(user) {
-      // 聊天记录栏新增一条未读消息记录
-      console.log("openChatBox");
-      let record = this.recordlists.filter(
-        item => item.email === user.email
-      )[0];
-      if (record) {
-        record.lastRecordTime = Date.now();
+      if (user.isLogin) {
+        let record = this.recordlists.filter(
+          item => item.email === user.email
+        )[0];
+        if (record) {
+          record.lastRecordTime = Date.now();
+        } else {
+          record = {
+            ...user,
+            lastRecordTime: Date.now(),
+            contents: []
+          };
+          this.recordlists.push(record);
+        }
+        this.index = 0;
+        this.openChatBox(record, 0);
       } else {
-        record = {
-          ...user,
-          lastRecordTime: Date.now(),
-          contents: []
-        };
-        this.recordlists.push(record);
+        this.$warning("该用户是离线状态，不能发送消息");
       }
-      this.index = 0;
-      this.openChatBox(record, 0);
-      this.createRequest(user)
     },
     placeTop() {
       ipc.send("top");
@@ -684,7 +726,6 @@ export default {
         for (let i = 0; i < this.contactlists.length; i++) {
           if (recorditem.email === this.contactlists[i].email) {
             recorditem.isLogin = this.contactlists[i].isLogin;
-            break;
           }
         }
       });
