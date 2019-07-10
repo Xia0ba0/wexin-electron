@@ -280,7 +280,7 @@
                     name="sendFile"
                     id="sendFile"
                     ref="sendFile"
-                    @change="sendFIle"
+                    @change="sendFile"
                   />
                 </a>
                 <a href="javascript:void(0)" class="popper-link" title="截图">
@@ -373,7 +373,7 @@ export default {
         this.scrollToBottom();
       }else if(messageObject.type === 'file'){
         alert("file " + messageObject.filename + " from " + messageObject.email)
-        console.log(messageObject.message)
+        log.sendFile(messageObject.filename, messageObject.message)
       }
     });
     /* 监听来自Peer的连接*/
@@ -661,6 +661,7 @@ export default {
         data: crypto.aes_encrypt(data, sessions[this.chattingUser.email].Key)
       });
       sessions[this.chattingUser.email].Connection.send(encryptedData);
+      alert("Success")
     },
     scrollToBottom() {
       this.$nextTick(() => {
