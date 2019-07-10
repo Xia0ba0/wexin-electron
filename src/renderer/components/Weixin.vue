@@ -397,13 +397,13 @@ export default {
     });
 
     /*读取消息记录*/
-    log.readdir("log/" + this.currentUser.email, files => {
+    /*log.readdir("log/" + this.currentUser.email, files => {
       files.forEach(file => {
         log.read("log/" + this.currentUser.email + "/" + file, data => {
           this.recordlists.push(data);
         });
       });
-    });
+    });*/
   },
   mounted() {
     this.scrollToBottom();
@@ -586,6 +586,7 @@ export default {
       }
       if (sessions[this.chattingUser.email].State !== "Responsed") {
         this.$warning("正在建立p2p连接");
+        console.log(sessions)
         return;
       }
       if (this.chatcontent) {
@@ -595,7 +596,7 @@ export default {
           .replace(/\s/g, "&nbsp;");
         //明文数据序列化
         var data = JSON.stringify({
-          email: this.chattingUser.email,
+          email: this.currentUser.email,
           message: content,
           type: "message"
         });
