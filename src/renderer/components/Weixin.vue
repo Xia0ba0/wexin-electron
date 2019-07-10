@@ -565,9 +565,9 @@ export default {
           });
           // 密文数据套一层对象再次序列化
           var encryptedData = JSON.stringify({
-            data:crypto.aes_encrypt(data,sessions[chattingUser.email].Key)
+            data:crypto.aes_encrypt(data,sessions[this.chattingUser.email].Key)
           })
-          sessions[chattingUser.email].Connection.send(encryptedData)
+          sessions[this.chattingUser.email].Connection.send(encryptedData)
 
           let messageData = {
             message: content,

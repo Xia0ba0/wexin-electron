@@ -3,7 +3,7 @@ const crypto = remote.getGlobal("sharedObject").crypto;
 
 function request(currentUser, requestUser) {
     //截取密钥的前十六位
-    var aesKey = crypto.aes_generate().substring(0, 15)
+    var aesKey = crypto.aes_generate().substring(0, 16)
     var encryptedKey = crypto.rsa_encrypt(aesKey, requestUser.key)
 
     var websock = new WebSocket(`ws://${requestUser.ip}:${requestUser.port}`)
@@ -23,7 +23,7 @@ function request(currentUser, requestUser) {
 
 function response(currentUser, responseUser) {
     //截取密钥的前十六位
-    var aesKey = crypto.aes_generate().substring(0, 15)
+    var aesKey = crypto.aes_generate().substring(0, 16)
     var encryptedKey = crypto.rsa_encrypt(aesKey, responseUser.key)
 
     var websock = new WebSocket(`ws://${responseUser.ip}:${responseUser.port}`)

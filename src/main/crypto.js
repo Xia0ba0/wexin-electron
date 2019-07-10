@@ -103,17 +103,14 @@ const Mycrypto = {
         return str
     },
     "aes_encrypt":function(data,key){
-        if (!data) {
-            return ""
-        }
         var iv = ""// 初始向量设为空
         var clearEncoding = 'utf8'
         var cipherEncoding = 'base64'
         var cipherChunks = []
-        var decipher = crypto.createDecipheriv('aes-256-ecb', key, iv)
-        decipher.setAutoPadding(true)
-        cipherChunks.push(decipher.update(data, cipherEncoding, clearEncoding))
-        cipherChunks.push(decipher.final(clearEncoding))
+        var cipher = crypto.createCipheriv('aes-256-ecb', key, iv)
+        cipher.setAutoPadding(true)
+        cipherChunks.push(cipher.update(data, clearEncoding, cipherEncoding))
+        cipherChunks.push(cipher.final(cipherEncoding))
 
         return cipherChunks.join('')
     },
