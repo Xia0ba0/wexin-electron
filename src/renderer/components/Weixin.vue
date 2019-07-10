@@ -337,8 +337,8 @@ export default {
     this.getContactlist();
     /* 监听消息*/
     ipc.on("newMessage", (event, email, data) => {
-      console.log(email);
-      console.log(data);
+      var plainText = crypto.aes_decrypt(data.data, sessions[email].Key)
+      console.log(JSON.parse(plainText))
     });
     /* 监听来自Peer的连接*/
     ipc.on("newConnection", (event, email, key) => {
@@ -557,12 +557,18 @@ export default {
             .replace(/\r\n/g, "<br/>")
             .replace(/\n/g, "<br/>")
             .replace(/\s/g, "&nbsp;");
-          var data = {
-            user_id: this.chattingUser._id,
+          //明文数据序列化
+          var data = JSON.stringify({
+            email: this.chattingUser.email,
             message: content,
-            type: "send"
-          };
-          sendSocket(data);
+            type: "message"
+          });
+          // 密文数据套一层对象再次序列化
+          var encryptedData = JSON.stringify({
+            data:crypto.aes_encrypt(data,sessions[chattingUser.email].Key)
+          })
+          sessions[chattingUser.email].Connection.send(encryptedData)
+
           let messageData = {
             message: content,
             email: this.currentUser.email,

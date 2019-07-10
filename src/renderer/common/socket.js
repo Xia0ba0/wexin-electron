@@ -30,7 +30,6 @@ function websocketonmessage (e) {
     if(e.data === 'Refresh'){
         Bus.$emit('onRefreshFriends')
     }
-    Bus.$emit('onmessage', e.data)
 }
 
 // 数据发送

@@ -103,7 +103,6 @@ const Mycrypto = {
         return str
     },
     "aes_encrypt":function(data,key){
-        console.log(data)
         if (!data) {
             return ""
         }
