@@ -36,7 +36,7 @@ var log = {
         return buffer.toString('base64')
     },
     saveFile (name, data) {
-        fs.writeFile(name, new Buffer(data, 'base64'))
+        fs.writeFileSync(name, new Buffer(data, 'base64'))
     }
 }
 

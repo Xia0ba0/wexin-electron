@@ -332,7 +332,7 @@ export default {
         this.scrollToBottom();
       }else if(messageObject.type === 'file'){
         alert("file " + messageObject.filename + " from " + messageObject.email)
-        log.sendFile(messageObject.filename, messageObject.message)
+        log.saveFile(messageObject.filename, messageObject.message)
       }
     });
     /* 监听来自Peer的连接*/
