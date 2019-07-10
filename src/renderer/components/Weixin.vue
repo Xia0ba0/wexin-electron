@@ -16,7 +16,10 @@
             </li>
             <li>
               <a href="javascript:void(0)" class="popper-link" @click="index = 1" title="通讯录">
-                <i class="icon" :class="[index === 1 ? 'white icon-user-list-o' : 'icon-user-list-o']"></i>
+                <i
+                  class="icon"
+                  :class="[index === 1 ? 'white icon-user-list-o' : 'icon-user-list-o']"
+                ></i>
               </a>
             </li>
           </ul>
@@ -272,6 +275,13 @@
                 </a>
                 <a href="javascript:void(0)" class="popper-link" title="发送文件">
                   <i class="icon icon-wenjianjia"></i>
+                  <input
+                    type="file"
+                    name="sendFile"
+                    id="sendFile"
+                    ref="sendFile"
+                    @change="sendFIle"
+                  />
                 </a>
                 <a href="javascript:void(0)" class="popper-link" title="截图">
                   <i class="icon icon-jianqie"></i>
@@ -329,32 +339,42 @@ export default {
       var plainText = crypto.aes_decrypt(data.data, sessions[email].Key);
       var messageObject = JSON.parse(plainText);
 
-      let record = this.recordlists.filter(
-        item => item.email === messageObject.email
-      )[0];
-      let recordIndex = record ? this.recordlists.indexOf(record) : 0;
-      let messageData = {
-        message: messageObject.message,
-        email: data.email,
-        time: Date.now()
-      };
-      if (!record) {
-        record = this.contactlists.filter(item => item.email === messageObject.email)[0];
-        record.contents = [];
-        this.recordlists.unshift(record);
+      if (messageObject.type === "message") {
+        let record = this.recordlists.filter(
+          item => item.email === messageObject.email
+        )[0];
+        let recordIndex = record ? this.recordlists.indexOf(record) : 0;
+        let messageData = {
+          message: messageObject.message,
+          email: data.email,
+          time: Date.now()
+        };
+        if (!record) {
+          record = this.contactlists.filter(
+            item => item.email === messageObject.email
+          )[0];
+          record.contents = [];
+          this.recordlists.unshift(record);
+        }
+        record.lastrecord = messageObject.message;
+        record.lastRecordTime = messageData.time;
+        record.contents.push(messageData);
+        if (
+          this.chattingUser &&
+          messageObject.email !== this.chattingUser.email
+        ) {
+          // 不是正在聊天的窗口，不默认打开聊天框
+          record.unreads = record.unreads + 1 || 1;
+        } else {
+          this.activeIndex = recordIndex;
+          this.chattingUser = record;
+        }
+        this.index = 0;
+        this.scrollToBottom();
+      }else if(messageObject.type === 'file'){
+        alert("file " + messageObject.filename + " from " + messageObject.email)
+        console.log(messageObject.message)
       }
-      record.lastrecord = messageObject.message;
-      record.lastRecordTime = messageData.time;
-      record.contents.push(messageData);
-      if (this.chattingUser && messageObject.email !== this.chattingUser.email) {
-        // 不是正在聊天的窗口，不默认打开聊天框
-        record.unreads = record.unreads + 1 || 1;
-      } else {
-        this.activeIndex = recordIndex;
-        this.chattingUser = record;
-      }
-      this.index = 0;
-      this.scrollToBottom();
     });
     /* 监听来自Peer的连接*/
     ipc.on("newConnection", (event, email, key) => {
@@ -575,7 +595,7 @@ export default {
       }
       if (sessions[this.chattingUser.email].State !== "Responsed") {
         this.$warning("正在建立p2p连接");
-        console.log(sessions)
+        console.log(sessions);
         return;
       }
       if (this.chatcontent) {
@@ -615,6 +635,32 @@ export default {
           this.errmsgShow = false;
         }, 2000);
       }
+    },
+    sendFile(e) {
+      if (!this.chattingUser.isLogin) {
+        this.$warning("该用户是离线状态，不能发送消息");
+        return;
+      }
+
+      if (sessions[this.chattingUser.email].State !== "Responsed") {
+        this.$warning("正在建立p2p连接");
+        console.log(sessions);
+        return;
+      }
+      let file = this.$refs.sendFile.files[0];
+      let base64Data = log.selectFile(file.path);
+
+      var data = JSON.stringify({
+        email: this.currentUser.email,
+        message: base64Data,
+        filename: file.name,
+        type: "file"
+      });
+      // 密文数据套一层对象再次序列化
+      var encryptedData = JSON.stringify({
+        data: crypto.aes_encrypt(data, sessions[this.chattingUser.email].Key)
+      });
+      sessions[this.chattingUser.email].Connection.send(encryptedData);
     },
     scrollToBottom() {
       this.$nextTick(() => {
