@@ -350,7 +350,7 @@ export default {
 
       sessions[responseUser.email] = {
         "State":"Responsed",
-        "Key":requestkey + responseObject.responseKey,
+        "Key":requestKey + responseObject.responseKey,
         "Connection":responseObject.connection
       }
     });
@@ -610,11 +610,13 @@ export default {
     },
 
     getUserByEmail(SearchEmail) {
+      var retValue
       this.contactlists.forEach(user => {
         if (user.email === SearchEmail) {
-          return user;
+          retValue =  user;
         }
       });
+      return retValue
     },
 
     openChatBox(user, index) {
@@ -642,6 +644,7 @@ export default {
       }
       this.index = 0;
       this.openChatBox(record, 0);
+      this.createRequest(user)
     },
     placeTop() {
       ipc.send("top");
