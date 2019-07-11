@@ -216,6 +216,9 @@
               <i class="icon icon-close"></i>
             </a>
           </p>
+          <p class="namebar">
+            <label class="name">{{chattingUser.name}}</label>
+          </p>
         </div>
         <div class="chat-body">
           <div class="chat-content scrolling" ref="chatcontentbox">
@@ -246,7 +249,7 @@
                   <i class="icon icon-wenjianjia"></i>
                   <label
                     for="sendFile"
-                    style="position: absolute;left: 68px;top: 10px;width: 21px;height: 20.8px;text-align: center;"
+                    style="position: absolute;left: 68px;top: 12px;width: 21px;height: 20.8px;text-align: center;"
                   ></label>
                   <input
                     type="file"
@@ -330,9 +333,11 @@ export default {
         }
         this.index = 0;
         this.scrollToBottom();
-      }else if(messageObject.type === 'file'){
-        alert("file " + messageObject.filename + " from " + messageObject.email)
-        log.saveFile(messageObject.filename, messageObject.message)
+      } else if (messageObject.type === "file") {
+        alert(
+          "file " + messageObject.filename + " from " + messageObject.email
+        );
+        log.saveFile(messageObject.filename, messageObject.message);
       }
     });
     /* 监听来自Peer的连接*/
@@ -620,7 +625,7 @@ export default {
         data: crypto.aes_encrypt(data, sessions[this.chattingUser.email].Key)
       });
       sessions[this.chattingUser.email].Connection.send(encryptedData);
-      alert("Success")
+      alert("Success");
     },
     scrollToBottom() {
       this.$nextTick(() => {
@@ -1177,7 +1182,7 @@ export default {
   background: #f5f5f5;
   position: relative;
   .chat-header {
-    height: 26px;
+    height: 60px;
     display: flex;
     flex-direction: column;
     border-bottom: solid 1px #ccc;
@@ -1236,7 +1241,7 @@ export default {
     }
   }
   .chat-body {
-    height: calc(100% - 27px);
+    height: calc(100% - 61px);
     position: relative;
   }
   .chat-content {
